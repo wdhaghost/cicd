@@ -4,30 +4,30 @@
 
 @section('content')
     <div class="container mx-auto mt-5">
-        <h2 class="text-2xl font-semibold mb-4">Créer un Nouvel Étudiant</h2>
+        <h2 class="b-4">Créer un Nouvel Étudiant</h2>
 
         <form action="{{ route('students.store') }}" method="post">
             @csrf
 
-            <div class="mb-4">
+            <div class="row mb-4">
                 <label for="lastname" class="form-label">Nom:</label>
-                <input type="text" name="lastname" id="lastname" class="form-input mt-1 block w-full" value="{{ old('lastname') }}" required>
+                <input type="text" name="lastname" id="lastname" class="form-input w-50 mt-1 " value="{{ old('lastname') }}" required>
                 @error('lastname')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
             </div>
 
-            <div class="mb-4">
+            <div class="row mb-4">
                 <label for="firstname" class="form-label">Prénom:</label>
-                <input type="text" name="firstname" id="firstname" class="form-input mt-1 block w-full" value="{{ old('firstname') }}" required>
+                <input type="text" name="firstname" id="firstname" class="form-input w-50 mt-1 " value="{{ old('firstname') }}" required>
                 @error('firstname')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
             </div>
 
-            <div class="mb-4">
+            <div class="row mb-4">
                 <label for="mail" class="form-label">Email:</label>
-                <input type="email" name="mail" id="mail" class="form-input mt-1 block w-full" value="{{ old('mail') }}" required>
+                <input type="email" name="mail" id="mail" class="form-input w-50 mt-1 " value="{{ old('mail') }}" required>
                 @error('mail')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
