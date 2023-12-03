@@ -19,6 +19,9 @@
                 <li>
                     <a href="{{ route('equipments.index') }}" class="nav-link">matériel</a>
                 </li>
+                <li>
+                    <a href="{{ route('loans.index') }}" class="nav-link">Prêts</a>
+                </li>
            
     
             </ul>
