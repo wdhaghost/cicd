@@ -7,5 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Student extends Model
 {
+    public function loans()
+    {
+        return $this->hasMany(Loan::class);
+    }
     use HasFactory;
 }
