@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Equipment;
 use App\Models\Loan;
 use App\Models\Student;
-use App\Mail\LoanCreated;
+use App\Mail\LoanReminder;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -57,6 +57,7 @@ class LoanController extends Controller
         $loan->equipment()->associate($request->equipment_id);
         $loan->save();
         $student = Student::find($request->student_id);
+        Mail::to($student->mail)->send(new LoanReminder($loan));
         return redirect()->route('loans.index')->with('success', 'Le prêt a été enregistré avec succès.');
 
         
