@@ -26,7 +26,14 @@
                     </ul>
                 </div>
         </div>
-
+        <div class="card p-2 w-50">
+            <h2 class="card-title">Prêt de matériels</h2>
+            <div class="card-body">
+                <ul class="list-group">
+                    <li class="list-group-item"><a href="{{ route('loans.index') }}" class="card-link">Liste des prêts</a></li>
+                    <li class="list-group-item">  <a href="{{ route('loans.create') }}" class="card-link">Emprunter du matériel</a>    </li>
+                </ul>
+            </div>
         
     </div>
 @endsection
