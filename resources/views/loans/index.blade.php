@@ -29,13 +29,22 @@
             <tbody>
                 @php $i = 1; @endphp
                 @foreach ($loans as $loan)
+                @php
+                 foreach ($students as $student) {
+            if ($student['id'] == $loan->student_id) {
+                $Astudent=$student;
+            }
+        }
+
+
+                @endphp
                     <tr class="table-secondary">
                         <th scope="row">{{ $i }}</th>
                         <td>{{ $loan->equipment->name }}</td>
                         <td>{{ date('d M Y',strtotime($loan->loan_date)) }}</td>
                         <td>{{ date('d M Y',strtotime($loan->return_date)) }}</td>
-                        <td>{{ $loan->student->lastname }}</td>
-                        <td>{{ $loan->student->firstname }}</td>
+                        <td>{{ $Astudent['nom']}}</td>
+                        <td>{{ $Astudent['prenom']}}</td>
                         <td>{{ $loan->returned == 0?"Non":"Oui"}}</td>
                         <td class="d-flex p-2">
                             @if ($loan->returned == 0)
@@ -45,7 +54,7 @@
                                 <input type="hidden" name="returned" id="returned" value="1">
                                 <button type="submit" class="btn btn-success">Retour</button>
                             </form>
-                            <a href="{{ route('loans.return',$loan->id) }}" class="btn btn-success mb-2">Retour</a>
+                            <a href="{{ route('loans.recall',$loan->id) }}" class="btn btn-success mb-2">Rappel</a>
 
                             @endif
                             <form action="{{ route('loans.destroy', $loan->id) }}" method="POST" class="inline ml-2">
