@@ -22,7 +22,7 @@
                 <select name="student_id" id="student_id" class="form-select w-full" required>
                     <option value="" disabled selected>Sélectionnez un étudiant</option>
                     @foreach ($students as $student)
-                        <option value="{{ $student->id }}">{{ $student->lastname }}, {{ $student->firstname }}</option>
+                        <option value="{{ $student['id'] }}">{{ $student['nom'] }}, {{ $student['prenom']}}</option>
                     @endforeach
                 </select>
                 @error('student_id')

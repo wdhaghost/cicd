@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Equipment;
 use App\Models\Loan;
-use App\Models\Student;
+
 use App\Mail\LoanReminder;
 use App\Mail\LoanReturn;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\ValidationException;
 
 class LoanController extends Controller
@@ -18,15 +20,17 @@ class LoanController extends Controller
     public function index()
     {
         // Votre logique pour récupérer la liste des prêts depuis la base de données
-        $loans = Loan::with(['student','equipment'])->get(); // Récupérer tous les prêts depuis la base de données
-       
-        return view('loans.index', ['loans' => $loans]);
+        $loans = Loan::with(['equipment'])->get(); // Récupérer tous les prêts depuis la base de données
+        $students = Http::get('http://vps-a47222b1.vps.ovh.net:4242/student/')->json();
+        return view('loans.index', ['loans' => $loans,'students' => $students]);
     }
 
     // Afficher le formulaire de création d'un prêt
     public function create()
     {
-        $students = Student::all();
+        $response = Http::get('http://vps-a47222b1.vps.ovh.net:4242/student/');
+        $students = $response->json();
+    
         $equipments = Equipment::where('quantity','>',0)->get();
         return view('loans.create',['students' => $students, 'equipments' => $equipments]);
         // Votre logique pour afficher le formulaire de création
@@ -39,10 +43,10 @@ class LoanController extends Controller
             $request->validate([
             'loan_date' => 'required|date',
             'equipment_id' => 'required|exists:equipments,id',
-            'student_id' => 'required|exists:students,id',
+            'student_id' => 'required',
         ]);
       
-
+        
         $loan = new Loan;
         $loan->loan_date = $request->loan_date;
         $return_date = $request->loan_date;
@@ -54,11 +58,18 @@ class LoanController extends Controller
         }
         $equipment->quantity = $equipment->quantity - 1;
         $equipment->save();
-        $loan->student()->associate($request->student_id);
         $loan->equipment()->associate($request->equipment_id);
+        $loan->student_id = $request->student_id;
+        $students = Http::get('http://vps-a47222b1.vps.ovh.net:4242/student/')->json();
+        
+        foreach ($students as $student) {
+            if ($student['id'] == $request->student_id) {
+                $Astudent=$student;
+            }
+        }
+        var_dump($Astudent);
         $loan->save();
-        $student = Student::find($request->student_id);
-        Mail::to($student->mail)->send(new LoanReminder($loan));
+        Mail::to($student['mail'])->send(new LoanReminder($loan));
         return redirect()->route('loans.index')->with('success', 'Le prêt a été enregistré avec succès.');
 
         
@@ -67,16 +78,14 @@ class LoanController extends Controller
     // Afficher les détails d'un prêt spécifique
     public function show( $id)
     {
-        $loan = Loan::with (['student','equipment'])->findOrFail($id);
-       
-        return view('loans.show', ['loan' => $loan]);
-        // Votre logique pour afficher les détails
+        Redirect::route('loans.index');
     }
 
     // Afficher le formulaire de modification d'un prêt
     public function edit(Loan $id)
     {
         // Votre logique pour afficher le formulaire de modification
+        Redirect::route('loans.index');
     }
 
     // Mettre à jour un prêt existant
@@ -92,12 +101,17 @@ class LoanController extends Controller
             return redirect()->route('loans.index')->with('error', 'Le matériel a déjà été retourné.');
         }
         $equipment = Equipment::find($loan->equipment_id);
-        $student = Student::find($loan->student_id);
+       
         $equipment->quantity = $equipment->quantity + 1;
         $equipment->save(); 
         $loan->returned = $request->returned;
         $loan->save();
-        Mail::to($student->mail)->send(new LoanReturn($loan));
+        $students = Http::get('http://vps-a47222b1.vps.ovh.net:4242/student/')->json();
+        foreach ($students as $student) {
+            if ($student['id'] == $loan->student_id) {
+                $Astudent=$student;
+            }}
+        Mail::to($Astudent['mail'])->send(new LoanReturn($loan));
         return redirect()->route('loans.index')->with('success', 'Le retour a été enregistré avec succès.');
     }
 
@@ -105,6 +119,10 @@ class LoanController extends Controller
     public function destroy( $id)
     {
         $loan = Loan::findOrFail($id);
+        $equipment = Equipment::find($loan->equipment_id);
+       
+        $equipment->quantity = $equipment->quantity + 1;
+        $equipment->save(); 
         $loan->delete();
         return redirect()->route('loans.index')->with('success', 'Le prêt a été supprimé avec succès.');
     }
@@ -112,8 +130,12 @@ class LoanController extends Controller
     public function recall( $id)
     {
         $loan = Loan::findOrFail($id);
-        $student = Student::find($loan->student_id);
-        Mail::to($student->mail)->send(new LoanReminder($loan));
+        $students = Http::get('http://vps-a47222b1.vps.ovh.net:4242/student/')->json();
+        foreach ($students as $student) {
+            if ($student['id'] == $loan->student_id) {
+                $Astudent=$student;
+            }}
+        Mail::to($Astudent['mail'])->send(new LoanReminder($loan));
         return redirect()->route('loans.index')->with('success', 'Le rappel a été envoyé avec succès.');
     }
 }

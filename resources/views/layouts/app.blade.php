@@ -13,9 +13,7 @@
                 <li class="nav-item">
                     <a href="{{route('home')}}" class="nav-link">NWS</a>
                 </li>
-                <li>
-                    <a href="{{ route('students.index') }}" class="nav-link">Etudiants</a>
-                </li>
+
                 <li>
                     <a href="{{ route('equipments.index') }}" class="nav-link">matériel</a>
                 </li>

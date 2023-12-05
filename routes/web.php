@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\StudentController;
 use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\LoanController;
 
@@ -20,8 +19,6 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-
-Route::resource('students',StudentController::class);
 Route::resource('equipments',EquipmentController::class);
 Route::resource('loans',LoanController::class);
-Route::get('loans/{loan}/return', [LoanController::class, 'return'])->name('loans.return');
+Route::get('loans/{loan}/return', [LoanController::class, 'recall'])->name('loans.recall');
