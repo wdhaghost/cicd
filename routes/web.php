@@ -24,3 +24,4 @@ Route::get('/', function () {
 Route::resource('students',StudentController::class);
 Route::resource('equipments',EquipmentController::class);
 Route::resource('loans',LoanController::class);
+Route::get('loans/{loan}/return', [LoanController::class, 'return'])->name('loans.return');
