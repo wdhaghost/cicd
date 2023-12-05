@@ -17,8 +17,8 @@ class EquipmentFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->text(maxNbChars: 50),
-            'description' => fake()->text(maxNbChars: 150),
+            'name' => fake()->text(maxNbChars:20),
+            'description' => fake()->text(maxNbChars:100),
             'quantity' => fake()->numberBetween($min=1, $max=10),
         ];
     }

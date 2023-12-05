@@ -6,6 +6,7 @@ use App\Models\Equipment;
 use App\Models\Loan;
 use App\Models\Student;
 use App\Mail\LoanReminder;
+use App\Mail\LoanReturn;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -91,10 +92,12 @@ class LoanController extends Controller
             return redirect()->route('loans.index')->with('error', 'Le matériel a déjà été retourné.');
         }
         $equipment = Equipment::find($loan->equipment_id);
+        $student = Student::find($loan->student_id);
         $equipment->quantity = $equipment->quantity + 1;
         $equipment->save(); 
         $loan->returned = $request->returned;
         $loan->save();
+        Mail::to($student->mail)->send(new LoanReturn($loan));
         return redirect()->route('loans.index')->with('success', 'Le retour a été enregistré avec succès.');
     }
 
@@ -104,5 +107,13 @@ class LoanController extends Controller
         $loan = Loan::findOrFail($id);
         $loan->delete();
         return redirect()->route('loans.index')->with('success', 'Le prêt a été supprimé avec succès.');
+    }
+
+    public function recall( $id)
+    {
+        $loan = Loan::findOrFail($id);
+        $student = Student::find($loan->student_id);
+        Mail::to($student->mail)->send(new LoanReminder($loan));
+        return redirect()->route('loans.index')->with('success', 'Le rappel a été envoyé avec succès.');
     }
 }

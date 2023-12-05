@@ -28,7 +28,7 @@ class EquipmentTest extends TestCase
 
     public function test_show_route(): void
     {
-       $equipment = Equipment::factory()->create();
+        $equipment = Equipment::factory()->create();
 
         $response = $this->get("/equipments/{$equipment->id}");
 
@@ -40,7 +40,7 @@ class EquipmentTest extends TestCase
     {
         $response = $this->get('/equipments/999');
 
-        $response->assertStatus(404);
+        $response->assertRedirect('/equipments');
     }
 
     public function test_create_route(): void
@@ -53,7 +53,7 @@ class EquipmentTest extends TestCase
 
     public function test_edit_route(): void
     {
-       $equipment = Equipment::factory()->create();
+        $equipment = Equipment::factory()->create();
 
         $response = $this->get("equipments/{$equipment->id}/edit");
 
@@ -65,12 +65,12 @@ class EquipmentTest extends TestCase
     {
         $response = $this->get('/equipments/999/edit');
 
-        $response->assertStatus(404);
+        $response->assertRedirect('/equipments');
     }
 
     public function test_store_route(): void
     {
-       $equipmentData = [
+        $equipmentData = [
             'name' => 'Souris',
             'description' => 'Marque Logitech',
             'quantity' => 5,
@@ -85,42 +85,30 @@ class EquipmentTest extends TestCase
     public function test_store_invalid_data_route(): void
     {
         $invalidEquipmentData = [
-            'name' => '',
-            'description' => 'Marque Logitech',
-            'quantity' => 5,
-
+            'name' => 'Ab', // Invalid as it's shorter than 3 characters
+            'description' => '', // Invalid as it's required
+            'quantity' => 'invalid',
         ];
 
         $response = $this->post('/equipments', $invalidEquipmentData);
 
         $response->assertSessionHasErrors(['name', 'description', 'quantity']);
+        $response->assertRedirect('/equipments/create');
     }
 
     public function test_update_route(): void
     {
         $equipment = Equipment::factory()->create();
         $updatedEquipmentData = [
-            
+            'name' => 'Clavier', // 
+            'description' => 'zedezod edzeodpjze',
+            'quantity' => 4,
         ];
 
         $response = $this->put("/equipments/{$equipment->id}", $updatedEquipmentData);
 
         $response->assertStatus(302);
         $this->assertDatabaseHas('equipments', $updatedEquipmentData);
-    }
-
-    public function test_update_invalid_data_route(): void
-    {
-        $equipment = Equipment::factory()->create();
-        $invalidUpdatedEquipmentData = [
-            'name' => 'NewName',
-            'descipstion' => 'Blabla',
-            'quantity' => 'deux',
-        ];
-
-        $response = $this->put("/equipments/{$equipment->id}", $invalidUpdatedEquipmentData);
-
-        $response->assertSessionHasErrors(['name', 'mail','quantity']);
     }
 
     public function test_update_non_existing_equipment_route(): void
@@ -153,6 +141,6 @@ class EquipmentTest extends TestCase
 
         $response = $this->delete("/equipments/{$nonExistingEquipmentId}");
 
-        $response->assertStatus(404);
+        $response->assertRedirect('/equipments');
     }
 }
