@@ -30,4 +30,4 @@ jobs:
         ssh -o StrictHostKeyChecking=no debian@51.75.21.202 'cd /var/www/html/nws && sudo php artisan config:cache && sudo php artisan route:cache && sudo php artisan view:cache'
     - name: Migrate database
       run: |
-        ssh -o StrictHostKeyChecking=no debian@51.75.21.202 'cd /var/www/html/nws && sudo php artisan migrate'
+        ssh -o StrictHostKeyChecking=no debian@51.75.21.202 'cd /var/www/html/nws && sudo php artisan migrate --force'
