@@ -45,6 +45,8 @@
                                 <input type="hidden" name="returned" id="returned" value="1">
                                 <button type="submit" class="btn btn-success">Retour</button>
                             </form>
+                            <a href="{{ route('loans.return',$loan->id) }}" class="btn btn-success mb-2">Retour</a>
+
                             @endif
                             <form action="{{ route('loans.destroy', $loan->id) }}" method="POST" class="inline ml-2">
                                 @csrf
