@@ -21,4 +21,4 @@ jobs:
 
     - name: Deploy to VPS
       run: |
-        ssh -o StrictHostKeyChecking=no debian@51.75.21.202 'cd /var/www/html && sudo mkdir nws && cd nws && sudo git init && sudo git remote add origin https://github.com/wdhaghost/cicd.git && sudo git pull origin release'
+        ssh -o StrictHostKeyChecking=no debian@51.75.21.202 'cd /var/www/html/nws && sudo git init && sudo git remote add origin https://github.com/wdhaghost/cicd.git && sudo git pull origin release'
