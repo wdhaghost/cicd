@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\ValidationException;
 
 class LoanController extends Controller
@@ -77,16 +78,14 @@ class LoanController extends Controller
     // Afficher les détails d'un prêt spécifique
     public function show( $id)
     {
-        $loan = Loan::with (['equipment'])->findOrFail($id);
-       
-        return view('loans.show', ['loan' => $loan]);
-        // Votre logique pour afficher les détails
+        Redirect::route('loans.index');
     }
 
     // Afficher le formulaire de modification d'un prêt
     public function edit(Loan $id)
     {
         // Votre logique pour afficher le formulaire de modification
+        Redirect::route('loans.index');
     }
 
     // Mettre à jour un prêt existant
@@ -107,7 +106,12 @@ class LoanController extends Controller
         $equipment->save(); 
         $loan->returned = $request->returned;
         $loan->save();
-        // Mail::to($student->mail)->send(new LoanReturn($loan));
+        $students = Http::get('http://vps-a47222b1.vps.ovh.net:4242/student/')->json();
+        foreach ($students as $student) {
+            if ($student['id'] == $loan->student_id) {
+                $Astudent=$student;
+            }}
+        Mail::to($Astudent['mail'])->send(new LoanReturn($loan));
         return redirect()->route('loans.index')->with('success', 'Le retour a été enregistré avec succès.');
     }
 
@@ -115,6 +119,10 @@ class LoanController extends Controller
     public function destroy( $id)
     {
         $loan = Loan::findOrFail($id);
+        $equipment = Equipment::find($loan->equipment_id);
+       
+        $equipment->quantity = $equipment->quantity + 1;
+        $equipment->save(); 
         $loan->delete();
         return redirect()->route('loans.index')->with('success', 'Le prêt a été supprimé avec succès.');
     }
