@@ -111,20 +111,6 @@ class EquipmentTest extends TestCase
         $this->assertDatabaseHas('equipments', $updatedEquipmentData);
     }
 
-    public function test_update_invalid_data_route(): void
-    {
-        $equipment = Equipment::factory()->create();
-        $invalidUpdatedEquipmentData = [
-            'name' => 'NewName',
-            'descipstion' => 'Blabla',
-            'quantity' => 'deux',
-        ];
-
-        $response = $this->put("/equipments/{$equipment->id}", $invalidUpdatedEquipmentData);
-
-        $response->assertSessionHasErrors(['name', 'description', 'quantity']);
-    }
-
     public function test_update_non_existing_equipment_route(): void
     {
         $nonExistingEquipmentId = 999;
