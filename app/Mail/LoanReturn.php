@@ -37,7 +37,7 @@ class LoanReturn extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.loan')
+        return $this->view('emails.return')
         ->with([
             'loanDate' => $this->loan->loan_date,
             'returnDate' => $this->loan->return_date,
