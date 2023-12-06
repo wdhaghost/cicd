@@ -7,7 +7,7 @@
 <body>
     <h1>Retour</h1>
     <p>
-        Parfait, vous avez rendu : {{ $equipmentName }} le {{date('d-mm-Y')}}.
+        Parfait, blbal vous avez rendu : {{ $equipmentName }} le {{date('d-mm-Y')}}.
     </p>
    
 </body>
