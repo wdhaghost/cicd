@@ -21,7 +21,7 @@ jobs:
 
     - name: Deploy to VPS
       run: |
-        ssh -o StrictHostKeyChecking=no debian@51.75.21.202 'cd /var/www/html/nws && sudo git pull origin release'
+        ssh -o StrictHostKeyChecking=no debian@51.75.21.202 'git config --global --add safe.directory /var/www/html/nws && cd /var/www/html/nws && sudo git pull origin release'
     - name: Install dependencies
       run: |
         ssh -o StrictHostKeyChecking=no debian@51.75.21.202 'cd /var/www/html/nws && sudo composer install && sudo npm install && sudo npm run build'
