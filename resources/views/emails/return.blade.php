@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Retour de prêt </title>
+    <title>Retour de prêt - {{date('d-mm-Y')}}</title>
 </head>
 <body>
     <h1>Retour</h1>
